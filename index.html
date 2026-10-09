@@ -1,65 +1,167 @@
-border: none;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #0002;
+        }
+
+        h1 {
+            text-align: center;
+            color: #243b55;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #243b55;
+            color: white;
             cursor: pointer;
         }
 
-        footer {
-            background: #141e30;
-            color: white;
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li span {
+            flex: 1;
+            overflow-wrap: anywhere;
+        }
+
+        li.completed span {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .delete-btn {
+            background: #d93636;
+        }
+
+        #message {
             text-align: center;
-            padding: 15px;
+            color: #666;
         }
     </style>
 </head>
+
 <body>
+    <div class="container">
+        <h1>My To-Do List</h1>
+        <p>Add your tasks and keep track of your work!</p>
 
-    <header>
-        <h1>Welcome to My Portfolio</h1>
-        <p>Student | Web Designer</p>
-    </header>
-
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-    </nav>
-
-    <section id="home">
-        <h2>Home</h2>
-        <p>Hello! Welcome to my personal portfolio website.</p>
-    </section>
-
-    <section id="about">
-        <h2>About Me</h2>
-        <p>I am a student learning HTML and CSS to create websites.</p>
-    </section>
-
-    <section id="projects">
-        <h2>My Projects</h2>
-        <div class="project">
-            <h3>Project 1: My First Website</h3>
-            <p>A simple website created using HTML and CSS.</p>
+        <div class="input-area">
+            <input id="taskInput" type="text"
+                   placeholder="Enter a new task">
+            <button id="addBtn">Add Task</button>
         </div>
-        <div class="project">
-            <h3>Project 2: Personal Portfolio</h3>
-            <p>A portfolio website to showcase my work.</p>
-        </div>
-    </section>
 
-    <section id="contact">
-        <h2>Contact Me</h2>
-        <form>
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-    </section>
+        <p id="message">No tasks yet. Add your first task!</p>
+        <ul id="taskList"></ul>
+    </div>
 
-    <footer>
-        <p>My Personal Portfolio | Web Designing Lab</p>
-    </footer>
+    <script>
+        const taskInput = document.getElementById("taskInput");
+        const addBtn = document.getElementById("addBtn");
+        const taskList = document.getElementById("taskList");
+        const message = document.getElementById("message");
 
+        function updateMessage() {
+            message.textContent = taskList.children.length === 0
+                ? "No tasks yet. Add your first task!"
+                : "You have " + taskList.children.length + " task(s).";
+        }
+
+        function addTask() {
+            const taskText = taskInput.value.trim();
+
+            if (taskText === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            const li = document.createElement("li");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.setAttribute("aria-label", "Mark task complete");
+
+            const span = document.createElement("span");
+            span.textContent = taskText;
+
+            checkbox.addEventListener("change", function () {
+                li.classList.toggle("completed", checkbox.checked);
+            });
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+
+            deleteBtn.addEventListener("click", function () {
+                li.remove();
+                updateMessage();
+            });
+
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+
+            taskInput.value = "";
+            taskInput.focus();
+            updateMessage();
+        }
+
+        addBtn.addEventListener("click", addTask);
+
+        taskInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                addTask();
+            }
+        });
+    </script>
 </body>
 </html>
 
